@@ -1,0 +1,8 @@
+---
+aci_hosts:
+  - host: your_aci_host1
+    username: your_aci_username1
+    password: your_aci_password1
+  - host: your_aci_host2
+    username: your_aci_username2
+    password: your_aci_password2

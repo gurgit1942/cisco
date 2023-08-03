@@ -1,0 +1,1 @@
+ansible-playbook list_cisco_endpoints.yml

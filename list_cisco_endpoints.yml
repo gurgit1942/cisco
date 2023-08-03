@@ -1,0 +1,14 @@
+---
+- name: List Cisco ACI Endpoints
+  hosts: localhost
+  gather_facts: no
+
+  vars_files:
+    - aci_config.yml
+
+  tasks:
+    - name: Loop through ACI Hosts
+      include_tasks: get_endpoints.yml
+      loop: "{{ aci_hosts }}"
+      loop_control:
+        loop_var: aci_host_vars

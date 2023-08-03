@@ -1,0 +1,27 @@
+---
+- name: Get Cisco ACI Endpoints
+  aci_rest:
+    host: "{{ aci_host_vars.host }}"
+    username: "{{ aci_host_vars.username }}"
+    password: "{{ aci_host_vars.password }}"
+    validate_certs: no
+    method: get
+    path: /api/class/fvCEp.json
+  register: aci_endpoints
+
+- name: Convert to CSV
+  set_fact:
+    csv_data: "{{ aci_endpoints.json | json_query('imdata[*].fvCEp.attributes') | map('json') | list }}"
+
+- name: Generate CSV Headers
+  set_fact:
+    csv_headers: "ACI Host,Tenant,Application Profile,Endpoint,IP Address,MAC Address"
+
+- name: Output CSV
+  copy:
+    content: |
+      {{ csv_headers }}
+      {% for item in csv_data %}
+      {{ aci_host_vars.host }},{{ item.dn.split('/')[1] }},{{ item.dn.split('/')[2] }},{{ item.dn.split('/')[5] }},{{ item.ip }},{{ item.mac }}
+      {% endfor %}
+    dest: "cisco_endpoints_{{ aci_host_vars.host }}.csv"
